@@ -1,0 +1,12 @@
+{
+    "name": "cacadosman/choose-your-fighter",
+    "authors": [
+        {
+            "name": "cacadosman",
+            "email": "wetmanz23@gmail.com"
+        }
+    ],
+    "require": {
+        "vlucas/phpdotenv": "^3.3"
+    }
+}

@@ -1,0 +1,63 @@
+version: '3'
+services:
+
+  #PHP Service
+  backend-app:
+    build: .
+    restart: always
+    working_dir: /var/www
+    volumes:
+      - ./app:/var/www
+    expose:
+      - "80"
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USERNAME: root
+      DB_DATABASE: jointsmantap
+      DB_PASSWORD: jointsmantap123
+    links:
+      - db
+    networks:
+      - app-network
+
+  #Nginx Service
+  server-app:
+    image: nginx:alpine
+    restart: always
+    tty: true
+    links:
+      - backend-app
+      - db
+    volumes:
+      - ./app:/var/www
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "10001:80"
+    networks:
+      - app-network
+
+  #MySQL Service
+  db:
+    image: mariadb:latest
+    restart: always
+    tty: true
+    expose:
+      - "3306"
+    environment:
+      MYSQL_DATABASE: jointsmantap
+      MYSQL_ROOT_PASSWORD: jointsmantap123
+    volumes:
+      - dbdata:/var/lib/mysql/
+      - ./mysqldump:/mysqldump
+    networks:
+      - app-network
+
+#Docker Networks
+networks:
+  app-network:
+    driver: bridge
+#Volumes
+volumes:
+  dbdata:
+    driver: local
